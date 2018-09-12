@@ -1,6 +1,7 @@
 package comcast.com.candaceapp
 
 import android.content.Context
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 
 import android.support.v4.app.Fragment
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun getCount(): Int {
             // Show 3 total pages.
-            return imageResourceArray.size
+            return imageNameArray.size
         }
     }
 
@@ -128,9 +129,18 @@ class MainActivity : AppCompatActivity() {
 
             val rootView = inflater.inflate(R.layout.fragment_main, container, false)
 
-            rootView.mainImageView.setImageDrawable(resources.getDrawable(arguments?.getInt(ARG_PAGE_RESOURCE_ID)!!))
+            rootView.mainWebView.isVerticalScrollBarEnabled = false
+            rootView.mainWebView.isHorizontalScrollBarEnabled = false
+
+            rootView.mainWebView.setBackgroundColor(Color.TRANSPARENT)
+            rootView.mainWebView.loadUrl("file:///android_asset/${arguments?.getString(ARG_PAGE_IMAGE_NAME)}")
 
             return rootView
+        }
+
+        override fun onPause() {
+            super.onPause()
+            view?.mainWebView?.stopLoading()
         }
 
         companion object {
@@ -138,7 +148,7 @@ class MainActivity : AppCompatActivity() {
              * The fragment argument representing the section number for this
              * fragment.
              */
-            private val ARG_PAGE_RESOURCE_ID = "argPageResourceId"
+            private val ARG_PAGE_IMAGE_NAME = "argPageImageName"
 
             /**
              * Returns a new instance of this fragment for the given section
@@ -147,7 +157,7 @@ class MainActivity : AppCompatActivity() {
             fun newInstance(pageIndex: Int): PlaceholderFragment {
                 val fragment = PlaceholderFragment()
                 val args = Bundle()
-                args.putInt(ARG_PAGE_RESOURCE_ID, imageResourceArray[pageIndex])
+                args.putString(ARG_PAGE_IMAGE_NAME, imageNameArray[pageIndex])
                 fragment.arguments = args
                 return fragment
             }
@@ -160,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         val RANDOM_SOUND = -2
 
         // NO MORE THAN 5 for now!
-        var imageResourceArray = arrayOf(R.drawable.fake_xhui_home, R.drawable.jet_flying, R.drawable.xhui_group, R.drawable.fidget)
+        var imageNameArray = arrayOf("fake_xhui_home.png", "jet_flying.jpg", "xhui_group.jpg", "fidget.gif")
         var soundResourceArray = arrayOf(NO_SOUND, R.raw.jet_flying, RANDOM_SOUND, NO_SOUND)
         var randomSoundArray = arrayOf(R.raw.ajay, R.raw.bryan, R.raw.jin, R.raw.me, R.raw.rachael, R.raw.song, R.raw.jeremy, R.raw.pri, R.raw.sreekanth, R.raw.khevna)
     }
