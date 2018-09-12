@@ -1,5 +1,6 @@
 package comcast.com.candaceapp
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 
 import android.support.v4.app.Fragment
@@ -14,6 +15,10 @@ import android.view.ViewGroup
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
+import android.media.AudioManager
+import android.media.SoundPool
+import android.support.v4.view.ViewPager
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +32,21 @@ class MainActivity : AppCompatActivity() {
      */
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
 
+    private var currentlyPlayingStreamId: Int? = null
+
+    val soundPool = SoundPool(5, AudioManager.STREAM_MUSIC, 0).apply {
+        setOnLoadCompleteListener { soundPool, streamId, status ->
+            currentlyPlayingStreamId = streamId
+            soundPool.play(streamId, 1f, 1f, 0, 0, 1f)
+        }
+    }
+
+    private fun playSound(context: Context, soundPool: SoundPool, soundResourceInt: Int) {
+        if (soundResourceInt != NO_SOUND) {
+            soundPool.load(context, soundResourceInt, 1)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,8 +57,29 @@ class MainActivity : AppCompatActivity() {
 
         // Set up the ViewPager with the sections adapter.
         container.adapter = mSectionsPagerAdapter
-    }
 
+        container.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                currentlyPlayingStreamId?.apply {
+                    soundPool.stop(this)
+                }
+
+                var soundResourceInt = soundResourceArray[position]
+
+                if (soundResourceInt == RANDOM_SOUND) {
+                    soundResourceInt = randomSoundArray[(0..(randomSoundArray.size-1)).random()]
+                }
+
+                if (soundResourceInt != NO_SOUND) {
+                    soundPool.load(this@MainActivity, soundResourceInt, 1)
+                }
+            }
+        })
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -58,7 +99,6 @@ class MainActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
-
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -88,8 +128,6 @@ class MainActivity : AppCompatActivity() {
 
             val rootView = inflater.inflate(R.layout.fragment_main, container, false)
 
-
-
             rootView.mainImageView.setImageDrawable(resources.getDrawable(arguments?.getInt(ARG_PAGE_RESOURCE_ID)!!))
 
             return rootView
@@ -117,6 +155,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        var imageResourceArray = arrayOf(R.drawable.page_1, R.drawable.page_2)
+
+        val NO_SOUND = -1
+        val RANDOM_SOUND = -2
+
+        // NO MORE THAN 5 for now!
+        var imageResourceArray = arrayOf(R.drawable.fake_xhui_home, R.drawable.jet_flying, R.drawable.xhui_group, R.drawable.fidget)
+        var soundResourceArray = arrayOf(NO_SOUND, R.raw.jet_flying, RANDOM_SOUND, NO_SOUND)
+        var randomSoundArray = arrayOf(R.raw.ajay, R.raw.bryan, R.raw.jin, R.raw.me, R.raw.rachael, R.raw.song, R.raw.jeremy, R.raw.pri, R.raw.sreekanth, R.raw.khevna)
     }
 }
