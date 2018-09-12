@@ -1,24 +1,23 @@
 package comcast.com.candaceapp
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
-
+import android.media.AudioManager
+import android.media.SoundPool
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-
+import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
+import android.view.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
-import android.media.AudioManager
-import android.media.SoundPool
-import android.support.v4.view.ViewPager
+import java.io.File
+import android.graphics.drawable.Drawable
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -133,7 +132,28 @@ class MainActivity : AppCompatActivity() {
             rootView.mainWebView.isHorizontalScrollBarEnabled = false
 
             rootView.mainWebView.setBackgroundColor(Color.TRANSPARENT)
-            rootView.mainWebView.loadUrl("file:///android_asset/${arguments?.getString(ARG_PAGE_IMAGE_NAME)}")
+
+
+            var imageFile = arguments?.getString(ARG_PAGE_IMAGE_NAME)!!
+
+            if (imageFile.endsWith(".gif")) {
+                var url = "${arguments?.getString(ARG_PAGE_IMAGE_NAME)}"
+                var data = "<html><head><title>Example</title><meta name=\"viewport\" \"content=\"width=960, initial-scale=.70 \" /></head><body><center><img width=\"960\" src=\"$url\" /></center></body></html>"
+
+                rootView.mainWebView.loadDataWithBaseURL("file:///android_asset/", data, "text/html", "UTF-8",null)
+
+                rootView.mainWebView.visibility = View.VISIBLE
+                rootView.mainImageView.visibility = View.GONE
+            } else {
+
+                val ims = activity?.assets?.open(imageFile)
+                val d = Drawable.createFromStream(ims, null)
+                rootView.mainImageView.setImageDrawable(d)
+                ims?.close()
+
+                rootView.mainWebView.visibility = View.GONE
+                rootView.mainImageView.visibility = View.VISIBLE
+            }
 
             return rootView
         }

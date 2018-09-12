@@ -11,7 +11,15 @@
         android:id="@+id/mainWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:focusable="true"
         android:importantForAccessibility="no" />
+
+    <ImageView
+        android:id="@+id/mainImageView"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 </android.support.constraint.ConstraintLayout>
