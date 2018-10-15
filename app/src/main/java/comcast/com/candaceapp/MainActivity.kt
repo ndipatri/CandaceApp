@@ -192,6 +192,6 @@ class MainActivity : AppCompatActivity() {
         // NO MORE THAN 5 for now!
         var imageNameArray = arrayOf("fake_xhui_home.png", "jet_flying.jpg", "xhui_group.jpg", "fidget.gif")
         var soundResourceArray = arrayOf(NO_SOUND, R.raw.jet_flying, RANDOM_SOUND, NO_SOUND)
-        var randomSoundArray = arrayOf(R.raw.ajay, R.raw.bryan, R.raw.jin, R.raw.me, R.raw.rachael, R.raw.song, R.raw.jeremy, R.raw.pri, R.raw.sreekanth, R.raw.khevna)
+        var randomSoundArray = arrayOf(R.raw.ajay, R.raw.bryan, R.raw.jin, R.raw.me, R.raw.rachael, R.raw.song, R.raw.jeremy, R.raw.pri, R.raw.sreekanth, R.raw.khevna, R.raw.pri, R.raw.pri, R.raw.pri, R.raw.pri)
     }
 }
